@@ -41,9 +41,7 @@ def test_sliding_window_output_shape():
             mode="gaussian",
         )
 
-    assert output.shape == (1, 3, 64, 64, 64), (
-        f"Expected (1, 3, 64, 64, 64), got {output.shape}"
-    )
+    assert output.shape == (1, 3, 64, 64, 64), f"Expected (1, 3, 64, 64, 64), got {output.shape}"
 
 
 def test_sliding_window_values_are_logits():
@@ -68,6 +66,6 @@ def test_sliding_window_values_are_logits():
         )
 
     # Raw logits can be negative — sigmoid not applied
-    assert output.min().item() < 0.0 or output.max().item() > 1.0, (
-        "Expected raw logits (not sigmoid-activated) from sliding_window_inference"
-    )
+    assert (
+        output.min().item() < 0.0 or output.max().item() > 1.0
+    ), "Expected raw logits (not sigmoid-activated) from sliding_window_inference"

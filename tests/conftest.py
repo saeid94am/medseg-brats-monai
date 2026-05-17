@@ -34,9 +34,9 @@ def synthetic_brats_case(tmp_path):
         image_paths.append(p)
 
     label = np.zeros(shape, dtype=np.uint8)
-    label[20:60, 20:60, 20:60] = 1   # NCR  → contributes to WT, TC
-    label[30:55, 30:55, 30:55] = 2   # SNFH → contributes to WT only
-    label[35:50, 35:50, 35:50] = 3   # ET   → contributes to WT, TC, ET
+    label[20:60, 20:60, 20:60] = 1  # NCR  → contributes to WT, TC
+    label[30:55, 30:55, 30:55] = 2  # SNFH → contributes to WT only
+    label[35:50, 35:50, 35:50] = 3  # ET   → contributes to WT, TC, ET
     seg_path = str(case_dir / f"{case_id}-seg.nii.gz")
     nib.save(nib.Nifti1Image(label, affine), seg_path)
 

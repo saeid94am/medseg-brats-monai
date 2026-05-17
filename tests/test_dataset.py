@@ -33,17 +33,17 @@ def test_brats_dataset_loading(brats_splits_json):
     assert "label" in sample, "Sample must contain 'label' key"
 
     # 4 input modalities stacked into one tensor
-    assert sample["image"].shape[0] == 4, (
-        f"Image must have 4 channels (modalities), got {sample['image'].shape[0]}"
-    )
+    assert (
+        sample["image"].shape[0] == 4
+    ), f"Image must have 4 channels (modalities), got {sample['image'].shape[0]}"
     # 3 binary region channels (WT, TC, ET) from ConvertToMultiChannelBasedOnBratsClassesd
-    assert sample["label"].shape[0] == 3, (
-        f"Label must have 3 channels (WT/TC/ET), got {sample['label'].shape[0]}"
-    )
+    assert (
+        sample["label"].shape[0] == 3
+    ), f"Label must have 3 channels (WT/TC/ET), got {sample['label'].shape[0]}"
     # Spatial dims must match between image and label
-    assert sample["image"].shape[1:] == sample["label"].shape[1:], (
-        "Image and label spatial dimensions must match"
-    )
+    assert (
+        sample["image"].shape[1:] == sample["label"].shape[1:]
+    ), "Image and label spatial dimensions must match"
 
 
 def test_brats_dataset_missing_json(tmp_path):

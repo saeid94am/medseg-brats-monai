@@ -21,9 +21,9 @@ def build_loss(name: str, focal_gamma: float = 2.0) -> nn.Module:
     """
     if name == "dice_ce":
         return DiceCELoss(
-            to_onehot_y=False,   # label is already multi-channel binary
+            to_onehot_y=False,  # label is already multi-channel binary
             sigmoid=True,
-            squared_pred=True,   # smoother Dice gradient
+            squared_pred=True,  # smoother Dice gradient
             smooth_nr=0.0,
             smooth_dr=1e-6,
         )

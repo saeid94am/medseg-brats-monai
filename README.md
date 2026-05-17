@@ -45,7 +45,7 @@ W&B report: *(link to be added after training)*
 ```bash
 # 1. Install (CUDA 12.1 build of PyTorch, then the package)
 pip install torch==2.2.2+cu121 torchvision==0.17.2+cu121 --index-url https://download.pytorch.org/whl/cu121
-pip install -e ".[dev]"
+pip install -e ".[dev,demo,notebook,download]"
 
 # 2. Train (default: DynUNet — swap model=segresnet or model=unet3d for others)
 python src/medseg_brats/train.py

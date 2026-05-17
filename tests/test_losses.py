@@ -24,7 +24,9 @@ def test_dicece_perfect_prediction():
     loss_fn = build_loss("dice_ce")
     loss = loss_fn(logits, label)
 
-    assert loss.item() < 0.05, f"Expected near-zero loss for perfect prediction, got {loss.item():.4f}"
+    assert (
+        loss.item() < 0.05
+    ), f"Expected near-zero loss for perfect prediction, got {loss.item():.4f}"
 
 
 def test_dicece_random_prediction_is_higher():
@@ -40,9 +42,9 @@ def test_dicece_random_prediction_is_higher():
     random_loss = loss_fn(random_logits, label).item()
     perfect_loss = loss_fn(perfect_logits, label).item()
 
-    assert random_loss > perfect_loss, (
-        f"Random loss ({random_loss:.4f}) should exceed perfect loss ({perfect_loss:.4f})"
-    )
+    assert (
+        random_loss > perfect_loss
+    ), f"Random loss ({random_loss:.4f}) should exceed perfect loss ({perfect_loss:.4f})"
 
 
 def test_dice_focal_builds():

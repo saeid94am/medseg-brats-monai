@@ -62,9 +62,13 @@ def test_dynunet_forward_cpu():
 
     # DynUNet with deep_supervision=True returns a list
     assert isinstance(outputs, list | tuple), "DynUNet with deep_supervision must return a list"
-    assert outputs[0].shape == (1, 3, 32, 32, 32), (
-        f"First output shape {outputs[0].shape} != (1, 3, 32, 32, 32)"
-    )
+    assert outputs[0].shape == (
+        1,
+        3,
+        32,
+        32,
+        32,
+    ), f"First output shape {outputs[0].shape} != (1, 3, 32, 32, 32)"
     assert count_parameters(model) > 0
 
 
@@ -76,9 +80,13 @@ def test_segresnet_forward_cpu():
     with torch.no_grad():
         output = model(_INPUT)
 
-    assert output.shape == (1, 3, 32, 32, 32), (
-        f"SegResNet output shape {output.shape} != (1, 3, 32, 32, 32)"
-    )
+    assert output.shape == (
+        1,
+        3,
+        32,
+        32,
+        32,
+    ), f"SegResNet output shape {output.shape} != (1, 3, 32, 32, 32)"
     assert count_parameters(model) > 0
 
 
@@ -90,9 +98,13 @@ def test_unet3d_forward_cpu():
     with torch.no_grad():
         output = model(_INPUT)
 
-    assert output.shape == (1, 3, 32, 32, 32), (
-        f"UNet3D output shape {output.shape} != (1, 3, 32, 32, 32)"
-    )
+    assert output.shape == (
+        1,
+        3,
+        32,
+        32,
+        32,
+    ), f"UNet3D output shape {output.shape} != (1, 3, 32, 32, 32)"
     assert count_parameters(model) > 0
 
 

@@ -56,6 +56,6 @@ def test_metric_bundle_reset():
     bundle.update(y_pred=pred_zeros, y=label)
     result_after = bundle.aggregate()
 
-    assert result_before["mean_dice"] > result_after["mean_dice"], (
-        "After reset, mean Dice with zero-overlap prediction should be lower"
-    )
+    assert (
+        result_before["mean_dice"] > result_after["mean_dice"]
+    ), "After reset, mean Dice with zero-overlap prediction should be lower"

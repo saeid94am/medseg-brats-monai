@@ -17,8 +17,8 @@ COPY configs/ configs/
 COPY scripts/ scripts/
 COPY tests/ tests/
 
-# Upgrade pip first to avoid resolver issues with the pytorch base image
-RUN pip install --upgrade pip
+# Upgrade pip and install hatchling (build backend for the package)
+RUN pip install --upgrade pip hatchling
 
 # Install only training-critical dependencies (skip demo/CI tools that conflict
 # with the existing pytorch base image environment)
@@ -37,8 +37,9 @@ RUN pip install --no-cache-dir \
     rich==13.7.1 \
     tqdm==4.66.2
 
-# Install the package itself (no-deps since we installed them above)
-RUN pip install --no-cache-dir --no-deps -e .
+# Install the package itself without re-resolving deps (already installed above).
+# Non-editable install is appropriate for a container image.
+RUN pip install --no-cache-dir --no-deps .
 
 # Default command: verify installation then show usage
 CMD ["python", "-c", \

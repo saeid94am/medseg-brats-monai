@@ -58,8 +58,10 @@ def main(cfg: DictConfig) -> None:
     ckpt = torch.load(cfg.inference.checkpoint, map_location=device)
     model.load_state_dict(ckpt["model_state_dict"])
     model.eval()
-    log.info(f"Loaded checkpoint from epoch {ckpt.get('epoch', '?')} "
-             f"(best mean Dice: {ckpt.get('best_mean_dice', '?'):.4f})")
+    log.info(
+        f"Loaded checkpoint from epoch {ckpt.get('epoch', '?')} "
+        f"(best mean Dice: {ckpt.get('best_mean_dice', '?'):.4f})"
+    )
 
     # ------------------------------------------------------------------ #
     # W&B (optional — log eval run separately)
@@ -113,8 +115,12 @@ def main(cfg: DictConfig) -> None:
     # ------------------------------------------------------------------ #
     summary = metrics.aggregate()
     log.info("\n=== Evaluation Summary ===")
-    log.info(f"  Dice   WT={summary['dice_wt']:.4f}  TC={summary['dice_tc']:.4f}  ET={summary['dice_et']:.4f}")
-    log.info(f"  HD95   WT={summary['hd95_wt']:.2f}  TC={summary['hd95_tc']:.2f}  ET={summary['hd95_et']:.2f}")
+    log.info(
+        f"  Dice   WT={summary['dice_wt']:.4f}  TC={summary['dice_tc']:.4f}  ET={summary['dice_et']:.4f}"
+    )
+    log.info(
+        f"  HD95   WT={summary['hd95_wt']:.2f}  TC={summary['hd95_tc']:.2f}  ET={summary['hd95_et']:.2f}"
+    )
     log.info(f"  Mean Dice: {summary['mean_dice']:.4f}")
 
     # Threshold check (from plan — Phase 2 gate)
