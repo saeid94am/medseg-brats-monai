@@ -1,0 +1,14 @@
+data/
+results/checkpoints/
+results/figures/
+*.pth
+*.ckpt
+.git/
+.github/
+__pycache__/
+*.pyc
+*.egg-info/
+.env
+notebooks/
+docs/
+demo/
