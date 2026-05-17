@@ -9,7 +9,6 @@ Framework: MONAI (chosen for its production-grade 3D medical imaging support
 and native BraTS transform integration — see glossary.md for trade-offs).
 """
 
-import torch
 import torch.nn as nn
 from monai.networks.nets import DynUNet
 

@@ -6,7 +6,6 @@ Test 8 of 10. CPU-only.
 import torch
 
 from medseg_brats.metrics import build_metrics
-from medseg_brats.metrics.segmentation import build_metrics
 
 
 def test_dice_metric_perfect_overlap():

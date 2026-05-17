@@ -22,7 +22,6 @@ import hydra
 import numpy as np
 import torch
 import wandb
-from monai.data import decollate_batch
 from monai.inferers import sliding_window_inference
 from monai.utils import set_determinism
 from omegaconf import DictConfig, OmegaConf
