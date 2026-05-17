@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this code in your research, please cite it as below."
+type: software
+title: "medseg-brats-monai: 3D Brain Tumor Segmentation Baseline on BraTS-GLI 2023"
+abstract: >
+  A reproducible, research-grade baseline for 3D brain tumor segmentation
+  using MONAI and BraTS-GLI 2023 data. Implements 3D U-Net, DynUNet (nnU-Net
+  replica), and SegResNet with full evaluation (Dice + HD95 per WT/TC/ET region),
+  Weights & Biases experiment tracking, and a Streamlit demo. Phase 1 of a
+  5-phase PhD portfolio in medical imaging AI.
+authors:
+  - family-names: Amini
+    given-names: Saeid
+    email: saeed.amiinii@gmail.com
+    orcid: ""
+version: "0.1.0"
+date-released: "2025-05-17"
+license: MIT
+repository-code: "https://github.com/saeid-amini/medseg-brats-monai"
+keywords:
+  - brain tumor segmentation
+  - BraTS
+  - MONAI
+  - 3D U-Net
+  - DynUNet
+  - SegResNet
+  - medical image segmentation
+  - deep learning
+references:
+  - type: article
+    title: "nnU-Net: A Self-configuring Method for Deep Learning-based Biomedical Image Segmentation"
+    authors:
+      - family-names: Isensee
+        given-names: Fabian
+    journal: "Nature Methods"
+    year: 2021
+    doi: "10.1038/s41592-020-01008-z"
+  - type: software
+    title: "Project MONAI"
+    authors:
+      - name: "MONAI Consortium"
+    year: 2022
+    url: "https://github.com/Project-MONAI/MONAI"

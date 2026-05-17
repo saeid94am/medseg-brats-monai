@@ -1,0 +1,54 @@
+# Data (never commit raw dataset files)
+data/
+*.nii
+*.nii.gz
+*.dcm
+
+# Model weights / checkpoints (use HuggingFace Hub links instead)
+results/checkpoints/
+*.pth
+*.pt
+*.ckpt
+
+# W&B artifacts
+wandb/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+.installed.cfg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter notebooks (outputs stripped by nbstripout; the .ipynb files themselves are committed)
+.ipynb_checkpoints/
+
+# Hydra outputs
+outputs/
+multirun/
+.hydra/
+
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Secrets
+.env
+*.env
