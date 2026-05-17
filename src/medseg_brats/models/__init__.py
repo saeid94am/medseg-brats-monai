@@ -1,5 +1,3 @@
-from medseg_brats.models.dynunet import build_dynunet
-from medseg_brats.models.segresnet import build_segresnet
-from medseg_brats.models.unet3d import build_unet3d
-
-__all__ = ["build_dynunet", "build_segresnet", "build_unet3d"]
+# Submodules: dynunet, segresnet, unet3d
+# Import directly from each submodule. Hydra's _target_ points to the
+# factory functions by their full dotted path, so this __init__ is not used.

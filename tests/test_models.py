@@ -61,7 +61,7 @@ def test_dynunet_forward_cpu():
         outputs = model(_INPUT)
 
     # DynUNet with deep_supervision=True returns a list
-    assert isinstance(outputs, (list, tuple)), "DynUNet with deep_supervision must return a list"
+    assert isinstance(outputs, list | tuple), "DynUNet with deep_supervision must return a list"
     assert outputs[0].shape == (1, 3, 32, 32, 32), (
         f"First output shape {outputs[0].shape} != (1, 3, 32, 32, 32)"
     )

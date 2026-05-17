@@ -63,7 +63,7 @@ def main(cfg: DictConfig) -> None:
     # ------------------------------------------------------------------ #
     # 2. Weights & Biases
     # ------------------------------------------------------------------ #
-    run = wandb.init(
+    wandb.init(
         project=cfg.wandb.project,
         entity=cfg.wandb.entity or None,
         config=OmegaConf.to_container(cfg, resolve=True),
@@ -159,7 +159,7 @@ def main(cfg: DictConfig) -> None:
                 outputs = model(images)
 
                 # DynUNet returns a list under deep supervision; others return a tensor
-                if isinstance(outputs, (list, tuple)):
+                if isinstance(outputs, list | tuple):
                     weights = [1.0, 0.5, 0.25][: len(outputs)]
                     loss = sum(loss_fn(o, labels) * w for o, w in zip(outputs, weights))
                 else:
@@ -179,7 +179,7 @@ def main(cfg: DictConfig) -> None:
             epoch_loss += loss.item() * grad_accum
 
             if cfg.debug_memory and step == 0 and epoch == 0:
-                _log_memory(f"epoch=0 step=0 post-backward")
+                _log_memory("epoch=0 step=0 post-backward")
 
         scheduler.step()
         avg_loss = epoch_loss / len(train_loader)

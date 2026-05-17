@@ -3,7 +3,6 @@
 Test 9 of 10. CPU-only.
 """
 
-import json
 from pathlib import Path
 
 import pytest

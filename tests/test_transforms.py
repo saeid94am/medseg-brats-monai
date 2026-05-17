@@ -4,7 +4,6 @@ Tests 1–2 of 10. All CPU-only.
 """
 
 import numpy as np
-import pytest
 import torch
 from monai.transforms import ConvertToMultiChannelBasedOnBratsClassesd
 

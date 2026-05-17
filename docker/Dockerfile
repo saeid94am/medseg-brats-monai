@@ -17,8 +17,28 @@ COPY configs/ configs/
 COPY scripts/ scripts/
 COPY tests/ tests/
 
-# Install package in editable mode with dev extras
-RUN pip install --no-cache-dir -e ".[dev]"
+# Upgrade pip first to avoid resolver issues with the pytorch base image
+RUN pip install --upgrade pip
+
+# Install only training-critical dependencies (skip demo/CI tools that conflict
+# with the existing pytorch base image environment)
+RUN pip install --no-cache-dir \
+    monai==1.3.0 \
+    hydra-core==1.3.2 \
+    omegaconf==2.3.0 \
+    wandb==0.16.6 \
+    nibabel==5.2.1 \
+    SimpleITK==2.3.1 \
+    scipy==1.13.0 \
+    pandas==2.2.2 \
+    scikit-learn==1.4.2 \
+    matplotlib==3.8.4 \
+    einops==0.7.0 \
+    rich==13.7.1 \
+    tqdm==4.66.2
+
+# Install the package itself (no-deps since we installed them above)
+RUN pip install --no-cache-dir --no-deps -e .
 
 # Default command: verify installation then show usage
 CMD ["python", "-c", \
