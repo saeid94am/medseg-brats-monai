@@ -1,5 +1,5 @@
-# Data (never commit raw dataset files)
-data/
+# Data (never commit raw dataset files — root-level only)
+/data/
 *.nii
 *.nii.gz
 *.dcm
