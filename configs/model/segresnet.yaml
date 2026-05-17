@@ -1,0 +1,14 @@
+# @package model
+# SegResNet — compact 3D residual encoder-decoder. Train this first (fastest iteration).
+
+name: segresnet
+_target_: medseg_brats.models.segresnet.build_segresnet
+
+spatial_dims: 3
+in_channels: 4
+out_channels: 3
+
+init_filters: 32          # base feature map size; doubles at each encoder stage
+blocks_down: [1, 2, 2, 4] # residual blocks per encoder stage (4 stages)
+blocks_up: [1, 1, 1]      # residual blocks per decoder stage
+dropout_prob: 0.2

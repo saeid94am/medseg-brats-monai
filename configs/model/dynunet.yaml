@@ -1,0 +1,42 @@
+# @package model
+# DynUNet — MONAI's nnU-Net replica. Primary model for this project.
+# _target_ is resolved by hydra.utils.instantiate() to call the factory function.
+
+name: dynunet
+_target_: medseg_brats.models.dynunet.build_dynunet
+
+spatial_dims: 3
+in_channels: 4            # T1n, T1c, T2w, T2-FLAIR
+out_channels: 3           # WT, TC, ET (binary per channel, sigmoid activation)
+
+# Kernel sizes per encoder stage (5 stages = 4 downsampling steps)
+kernel_size:
+  - [3, 3, 3]
+  - [3, 3, 3]
+  - [3, 3, 3]
+  - [3, 3, 3]
+  - [3, 3, 3]
+
+# Strides: first is always [1,1,1] (no downsampling at input), rest are [2,2,2]
+strides:
+  - [1, 1, 1]
+  - [2, 2, 2]
+  - [2, 2, 2]
+  - [2, 2, 2]
+  - [2, 2, 2]
+
+# Upsampling kernel sizes (one per decoder step = len(strides) - 1)
+upsample_kernel_size:
+  - [2, 2, 2]
+  - [2, 2, 2]
+  - [2, 2, 2]
+  - [2, 2, 2]
+
+# Feature map sizes per stage — PRIMARY VRAM LEVER.
+# Default nnU-Net values are [64, 96, 128, 192, 256]; reduced here for 4 GB VRAM.
+# If OOM: drop to [32, 64, 96, 192, 256]
+filters: [32, 64, 128, 256, 320]
+
+dropout: 0.1
+deep_supervision: true    # auxiliary losses at intermediate decoder outputs (training only)
+deep_supr_num: 2          # number of auxiliary outputs (weights: 1.0, 0.5, 0.25)

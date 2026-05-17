@@ -1,0 +1,30 @@
+# @package _global_
+# Evaluation configuration.
+# Usage: python src/medseg_brats/eval.py model=dynunet inference.checkpoint=results/checkpoints/best_dynunet.pth
+
+defaults:
+  - model: dynunet
+  - _self_
+
+data:
+  data_dir: data/
+  json_list: data/brats2023_splits.json
+  num_workers: 4
+
+inference:
+  roi_size: [96, 96, 96]
+  sw_batch_size: 1
+  overlap: 0.5
+  mode: gaussian
+  checkpoint: null        # required: path to .pth checkpoint file
+  threshold: 0.5          # sigmoid threshold for binary prediction
+
+output:
+  results_dir: results/
+  metrics_dir: results/metrics/
+  figures_dir: results/figures/
+  csv_name: results.csv   # per-case Dice and HD95 saved here
+
+wandb:
+  project: medseg-brats-monai
+  entity: null

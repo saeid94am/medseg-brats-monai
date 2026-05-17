@@ -1,0 +1,14 @@
+# @package model
+# 3D U-Net — vanilla baseline. Simplest architecture; expected to underperform DynUNet.
+
+name: unet3d
+_target_: medseg_brats.models.unet3d.build_unet3d
+
+spatial_dims: 3
+in_channels: 4
+out_channels: 3
+
+channels: [32, 64, 128, 256]  # feature maps at each encoder level (4 levels, 3 downsampling steps)
+strides: [2, 2, 2]            # one stride per downsampling step (len = len(channels) - 1)
+num_res_units: 2               # residual units per block (0 = plain conv, 2 = with skip)
+dropout: 0.1
