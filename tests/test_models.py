@@ -53,16 +53,23 @@ _INPUT = torch.randn(1, 4, 32, 32, 32)  # shared small input for speed
 
 
 def test_dynunet_forward_cpu():
-    """DynUNet forward pass on CPU returns a list (deep supervision) with correct shape."""
+    """DynUNet returns a stacked supervision tensor (B, heads, C, H, W, D) in train mode.
+
+    MONAI 1.3.0 changed DynUNet to return a single 6-D tensor when
+    deep_supervision=True during training rather than a Python list.
+    The supervision head dimension sits at index 1.
+    In eval mode it returns the standard 5-D tensor (B, C, H, W, D).
+    """
     model = build_dynunet(**_DYNUNET_CPU_CFG)
-    model.eval()
+    model.train()  # 6-D stacked output only produced in training mode
 
     with torch.no_grad():
         outputs = model(_INPUT)
 
-    # DynUNet with deep_supervision=True returns a list
-    assert isinstance(outputs, list | tuple), "DynUNet with deep_supervision must return a list"
-    assert outputs[0].shape == (
+    # deep_supr_num=1 → 2 heads total (main + 1 supervision)
+    assert outputs.ndim == 6, f"Expected 6-D tensor, got {outputs.ndim}-D"
+    assert outputs.shape[1] == 2, f"Expected 2 supervision heads, got {outputs.shape[1]}"
+    assert outputs[:, 0].shape == (
         1,
         3,
         32,

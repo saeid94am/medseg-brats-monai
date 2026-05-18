@@ -77,7 +77,9 @@ def generate_splits(
     val_entries = entries[:n_val]
     train_entries = entries[n_val:]
 
-    print(f"Total cases: {len(entries)}  |  Train: {len(train_entries)}  |  Val: {len(val_entries)}")
+    print(
+        f"Total cases: {len(entries)}  |  Train: {len(train_entries)}  |  Val: {len(val_entries)}"
+    )
     return {"training": train_entries, "validation": val_entries}
 
 
@@ -111,7 +113,9 @@ def main() -> None:
 
     splits = generate_splits(args.data_dir, val_frac=args.val_frac, seed=args.seed)
 
-    output_path = Path(args.output) if args.output else Path(args.data_dir).parent / "brats2023_splits.json"
+    output_path = (
+        Path(args.output) if args.output else Path(args.data_dir).parent / "brats2023_splits.json"
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump(splits, f, indent=2)

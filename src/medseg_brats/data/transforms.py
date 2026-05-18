@@ -5,12 +5,14 @@ Validation pipeline applies only deterministic preprocessing — full volumes ar
 to sliding_window_inference at evaluation time.
 """
 
+import numpy as np
+import torch
 from monai.transforms import (
     Compose,
-    ConvertToMultiChannelBasedOnBratsClassesd,
     EnsureChannelFirstd,
     EnsureTyped,
     LoadImaged,
+    MapTransform,
     NormalizeIntensityd,
     Orientationd,
     RandFlipd,
@@ -28,6 +30,49 @@ from monai.transforms import (
 _KEYS = ["image", "label"]
 
 
+class ConvertBraTS2023Labelsd(MapTransform):
+    """Convert BraTS 2023 integer labels to 3-channel binary [WT, TC, ET].
+
+    BraTS 2023 label convention (differs from BraTS 2018 which used label 4 for ET):
+        0 = background
+        1 = NCR  (necrotic tumor core)
+        2 = SNFH (surrounding non-enhancing FLAIR hyperintensity / edema)
+        3 = ET   (GD-enhancing tumor)
+
+    Output channels:
+        ch 0 (WT) = labels 1 | 2 | 3   whole tumor
+        ch 1 (TC) = labels 1 | 3        tumor core (NCR + ET, excludes edema)
+        ch 2 (ET) = label 3             enhancing tumor only
+    """
+
+    def __call__(self, data: dict) -> dict:
+        d = dict(data)
+        for key in self.key_iterator(d):
+            img = d[key]
+            if img.ndim == 4 and img.shape[0] == 1:
+                img = img.squeeze(0)  # (1, H, W, D) → (H, W, D)
+            if isinstance(img, torch.Tensor):
+                result = torch.stack(
+                    [
+                        (img == 1) | (img == 2) | (img == 3),
+                        (img == 1) | (img == 3),
+                        img == 3,
+                    ],
+                    dim=0,
+                ).float()
+            else:
+                result = np.stack(
+                    [
+                        ((img == 1) | (img == 2) | (img == 3)).astype(np.float32),
+                        ((img == 1) | (img == 3)).astype(np.float32),
+                        (img == 3).astype(np.float32),
+                    ],
+                    axis=0,
+                )
+            d[key] = result
+        return d
+
+
 def get_train_transforms() -> Compose:
     """Return the full training transform pipeline."""
     return Compose(
@@ -36,8 +81,8 @@ def get_train_transforms() -> Compose:
             # image key receives a list of 4 modality paths; LoadImaged stacks them channel-first
             LoadImaged(keys=_KEYS, image_only=False),
             EnsureChannelFirstd(keys=_KEYS),
-            # Convert integer labels [0,1,2,3] → 3 binary channels [WT, TC, ET]
-            ConvertToMultiChannelBasedOnBratsClassesd(keys="label"),
+            # Convert BraTS 2023 integer labels [0,1,2,3] → 3 binary channels [WT, TC, ET]
+            ConvertBraTS2023Labelsd(keys="label"),
             # --- Spatial standardisation ---
             Orientationd(keys=_KEYS, axcodes="RAS"),
             Spacingd(
@@ -88,7 +133,7 @@ def get_val_transforms() -> Compose:
         [
             LoadImaged(keys=_KEYS, image_only=False),
             EnsureChannelFirstd(keys=_KEYS),
-            ConvertToMultiChannelBasedOnBratsClassesd(keys="label"),
+            ConvertBraTS2023Labelsd(keys="label"),
             Orientationd(keys=_KEYS, axcodes="RAS"),
             Spacingd(
                 keys=_KEYS,

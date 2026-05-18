@@ -5,15 +5,18 @@ Tests 1–2 of 10. All CPU-only.
 
 import numpy as np
 import torch
-from monai.transforms import ConvertToMultiChannelBasedOnBratsClassesd
 
-from medseg_brats.data.transforms import get_train_transforms, get_val_transforms
+from medseg_brats.data.transforms import (
+    ConvertBraTS2023Labelsd,
+    get_train_transforms,
+    get_val_transforms,
+)
 
 
 def test_brats_label_conversion():
-    """ConvertToMultiChannelBasedOnBratsClassesd produces 3 correct binary channels.
+    """ConvertBraTS2023Labelsd produces 3 correct binary channels [WT, TC, ET].
 
-    BraTS label mapping:
+    BraTS 2023 label mapping (ET = label 3, not label 4 as in BraTS 2018):
         WT (ch 0) = labels 1 ∪ 2 ∪ 3
         TC (ch 1) = labels 1 ∪ 3
         ET (ch 2) = label  3
@@ -25,7 +28,7 @@ def test_brats_label_conversion():
     label[0, 2, 0, 0] = 3  # ET   → WT=1, TC=1, ET=1
     # label[0, 3, 0, 0] = 0  # background → all zeros (default)
 
-    transform = ConvertToMultiChannelBasedOnBratsClassesd(keys="label")
+    transform = ConvertBraTS2023Labelsd(keys="label")
     result = transform({"label": label})["label"]
 
     assert result.shape[0] == 3, f"Expected 3 channels, got {result.shape[0]}"

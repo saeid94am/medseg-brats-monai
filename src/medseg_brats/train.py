@@ -158,10 +158,12 @@ def main(cfg: DictConfig) -> None:
             with torch.cuda.amp.autocast(enabled=cfg.training.amp):
                 outputs = model(images)
 
-                # DynUNet returns a list under deep supervision; others return a tensor
-                if isinstance(outputs, list | tuple):
-                    weights = [1.0, 0.5, 0.25][: len(outputs)]
-                    loss = sum(loss_fn(o, labels) * w for o, w in zip(outputs, weights))
+                # DynUNet with deep_supervision returns (B, num_heads, C, H, W, D);
+                # all other models return (B, C, H, W, D).
+                if outputs.ndim == 6:
+                    n_heads = outputs.shape[1]
+                    weights = [1.0, 0.5, 0.25][:n_heads]
+                    loss = sum(loss_fn(outputs[:, i], labels) * w for i, w in enumerate(weights))
                 else:
                     loss = loss_fn(outputs, labels)
 
