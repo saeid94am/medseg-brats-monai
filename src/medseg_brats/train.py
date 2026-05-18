@@ -85,13 +85,13 @@ def main(cfg: DictConfig) -> None:
         json_list=cfg.data.json_list,
         split="validation",
         transforms=get_val_transforms(),
-        cache_rate=1.0,  # always cache the smaller val set fully
+        cache_rate=cfg.data.cache_rate,
         num_workers=cfg.data.num_workers,
     )
     train_loader = build_loader(
         train_ds, batch_size=cfg.training.batch_size, shuffle=True, num_workers=cfg.data.num_workers
     )
-    val_loader = build_loader(val_ds, batch_size=1, shuffle=False, num_workers=2)
+    val_loader = build_loader(val_ds, batch_size=1, shuffle=False, num_workers=cfg.data.num_workers)
     log.info(f"Train cases: {len(train_ds)} | Val cases: {len(val_ds)}")
 
     # ------------------------------------------------------------------ #

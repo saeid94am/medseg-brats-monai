@@ -9,8 +9,8 @@ defaults:
 data:
   data_dir: data/
   json_list: data/brats2023_splits.json
-  cache_rate: 0.25        # fraction of training set cached to CPU RAM; reduce if RAM < 16 GB
-  num_workers: 4
+  cache_rate: 0.0         # 0 = stream from disk (safe for any RAM); raise to 0.1-0.2 if you have 32+ GB RAM
+  num_workers: 0          # 0 avoids Windows multiprocess spawn overhead; increase on Linux
 
 training:
   max_epochs: 300
