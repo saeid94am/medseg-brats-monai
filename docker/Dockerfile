@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy project files (data/ and results/ are excluded via .dockerignore)
-COPY pyproject.toml LICENSE ./
+COPY pyproject.toml LICENSE README.md ./
 COPY src/ src/
 COPY configs/ configs/
 COPY scripts/ scripts/
