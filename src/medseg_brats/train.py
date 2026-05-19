@@ -213,6 +213,21 @@ def main(cfg: DictConfig) -> None:
         wandb.log({"train/loss": avg_loss, "train/lr": current_lr, "epoch": epoch})
         log.info(f"Epoch {epoch:03d} | loss={avg_loss:.4f} | lr={current_lr:.2e}")
 
+        # Save a rolling "last" checkpoint every epoch so resume never loses
+        # more than one epoch of training regardless of val_interval.
+        torch.save(
+            {
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "scheduler_state_dict": scheduler.state_dict(),
+                "scaler_state_dict": scaler.state_dict(),
+                "best_mean_dice": best_mean_dice,
+                "cfg": OmegaConf.to_container(cfg, resolve=True),
+            },
+            ckpt_dir / f"last_{cfg.model.name}.pth",
+        )
+
         # -------------------------------------------------------------- #
         # 9. Validation
         # -------------------------------------------------------------- #
