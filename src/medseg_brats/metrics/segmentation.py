@@ -57,11 +57,13 @@ class MetricBundle:
             # inf arises when GT is empty but pred is non-zero; replace with nan.
             hd95_vals = hd95_vals.float()
             hd95_vals[torch.isinf(hd95_vals)] = float("nan")
-            result.update({
-                "hd95_wt": hd95_vals[0].item(),
-                "hd95_tc": hd95_vals[1].item(),
-                "hd95_et": hd95_vals[2].item(),
-            })
+            result.update(
+                {
+                    "hd95_wt": hd95_vals[0].item(),
+                    "hd95_tc": hd95_vals[1].item(),
+                    "hd95_et": hd95_vals[2].item(),
+                }
+            )
 
         return result
 

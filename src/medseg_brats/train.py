@@ -160,7 +160,9 @@ def main(cfg: DictConfig) -> None:
             scaler.load_state_dict(ckpt["scaler_state_dict"])
         best_mean_dice = ckpt.get("best_mean_dice", 0.0)
         start_epoch = ckpt["epoch"] + 1
-        log.info(f"Resumed from {resume_path} | epoch={ckpt['epoch']} | best_dice={best_mean_dice:.4f}")
+        log.info(
+            f"Resumed from {resume_path} | epoch={ckpt['epoch']} | best_dice={best_mean_dice:.4f}"
+        )
 
     # ------------------------------------------------------------------ #
     # 9. Training loop
