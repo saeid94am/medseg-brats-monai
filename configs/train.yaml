@@ -10,7 +10,7 @@ data:
   data_dir: data/
   json_list: data/brats2023_splits.json
   cache_rate: 0.0         # 0 = stream from disk (safe for any RAM); raise to 0.1-0.2 if you have 32+ GB RAM
-  num_workers: 0          # 0 avoids Windows multiprocess spawn overhead; increase on Linux
+  num_workers: 0          # 0 keeps CPU free for other apps; increase on Linux/headless servers
 
 training:
   max_epochs: 300
@@ -23,6 +23,7 @@ training:
   amp: true               # FP16 mixed precision via torch.cuda.amp
   grad_checkpoint: true   # gradient checkpointing to save ~35% VRAM
   compile: false          # torch.compile(); disable on Windows without Triton
+  resume_from: null       # path to checkpoint to resume from, e.g. results/checkpoints/best_segresnet.pth
 
 loss:
   name: dice_ce           # "dice_ce" or "dice_focal" (switch if ET Dice stagnates)

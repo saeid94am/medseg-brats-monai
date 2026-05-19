@@ -141,12 +141,33 @@ def main(cfg: DictConfig) -> None:
     metrics = build_metrics()
 
     # ------------------------------------------------------------------ #
-    # 8. Training loop
+    # 8. Resume from checkpoint (optional)
     # ------------------------------------------------------------------ #
     best_mean_dice = 0.0
+    start_epoch = 0
+
+    resume_path = cfg.training.get("resume_from", None)
+    if resume_path:
+        resume_path = Path(resume_path)
+        if not resume_path.exists():
+            raise FileNotFoundError(f"Resume checkpoint not found: {resume_path}")
+        ckpt = torch.load(resume_path, map_location=device)
+        model.load_state_dict(ckpt["model_state_dict"])
+        optimizer.load_state_dict(ckpt["optimizer_state_dict"])
+        if "scheduler_state_dict" in ckpt:
+            scheduler.load_state_dict(ckpt["scheduler_state_dict"])
+        if "scaler_state_dict" in ckpt:
+            scaler.load_state_dict(ckpt["scaler_state_dict"])
+        best_mean_dice = ckpt.get("best_mean_dice", 0.0)
+        start_epoch = ckpt["epoch"] + 1
+        log.info(f"Resumed from {resume_path} | epoch={ckpt['epoch']} | best_dice={best_mean_dice:.4f}")
+
+    # ------------------------------------------------------------------ #
+    # 9. Training loop
+    # ------------------------------------------------------------------ #
     grad_accum = cfg.training.grad_accum_steps
 
-    for epoch in range(cfg.training.max_epochs):
+    for epoch in range(start_epoch, cfg.training.max_epochs):
         model.train()
         epoch_loss = 0.0
         optimizer.zero_grad()
@@ -233,6 +254,8 @@ def main(cfg: DictConfig) -> None:
                         "epoch": epoch,
                         "model_state_dict": model.state_dict(),
                         "optimizer_state_dict": optimizer.state_dict(),
+                        "scheduler_state_dict": scheduler.state_dict(),
+                        "scaler_state_dict": scaler.state_dict(),
                         "best_mean_dice": best_mean_dice,
                         "cfg": OmegaConf.to_container(cfg, resolve=True),
                     },
