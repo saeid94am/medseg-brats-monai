@@ -264,7 +264,7 @@ def main(cfg: DictConfig) -> None:
                     },
                     ckpt_path,
                 )
-                log.info(f"  New best mean Dice={best_mean_dice:.4f} → saved {ckpt_path}")
+                log.info(f"  New best mean Dice={best_mean_dice:.4f} -> saved {ckpt_path}")
                 wandb.run.summary["best_mean_dice"] = best_mean_dice
                 wandb.run.summary["best_epoch"] = epoch
 
