@@ -123,11 +123,11 @@ The BraTS plan specification targets ≥ 8 GB VRAM. This repo runs on **4 GB** (
 ## Citation
 
 ```bibtex
-@software{amini_medseg_brats_2024,
+@software{amini_medseg_brats_2026,
   author    = {Amini Baghbadorani, Saeid},
   title     = {medseg-brats-monai: 3D Brain Tumor Segmentation on BraTS-GLI 2023},
-  year      = {2024},
-  url       = {https://github.com/saeid-amini/medseg-brats-monai},
+  year      = {2026},
+  url       = {https://github.com/saeid94am/medseg-brats-monai},
   version   = {0.1.0},
 }
 ```
