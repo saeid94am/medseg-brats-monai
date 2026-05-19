@@ -239,7 +239,8 @@ def main(cfg: DictConfig) -> None:
 
             wandb.log({f"val/{k}": v for k, v in result.items()} | {"epoch": epoch})
             log.info(
-                f"  Val | Dice WT={result['dice_wt']:.4f} TC={result['dice_tc']:.4f} "
+                f"  Val | Dice WT={result['dice_wt']:.4f} "
+                f"TC={result['dice_tc']:.4f} "
                 f"ET={result['dice_et']:.4f} | mean={result['mean_dice']:.4f}"
             )
 
