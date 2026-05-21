@@ -70,6 +70,7 @@ def main(cfg: DictConfig) -> None:
         config=OmegaConf.to_container(cfg, resolve=True),
         name=f"{cfg.model.name}_seed{cfg.training.seed}",
         tags=[cfg.model.name, "phase1"],
+        mode=cfg.wandb.mode,
     )
 
     # ------------------------------------------------------------------ #

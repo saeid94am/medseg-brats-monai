@@ -47,6 +47,7 @@ inference:
 wandb:
   project: medseg-brats-monai
   entity: null            # set via WANDB_ENTITY env var, or fill in your username here
+  mode: offline           # "offline" saves locally and syncs later; avoids network crashes during training
   log_images: true        # log sample prediction overlays to W&B every val_interval epochs
   log_interval: 1         # log train metrics every N steps
 
