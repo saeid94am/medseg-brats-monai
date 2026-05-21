@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Literal
 
 from monai.data import CacheDataset, ThreadDataLoader
+from torch.utils.data import DataLoader
 
 
 class BraTSDataset(CacheDataset):
@@ -69,16 +70,26 @@ def build_loader(
     batch_size: int = 1,
     shuffle: bool = True,
     num_workers: int = 4,
-) -> ThreadDataLoader:
-    """Wrap a BraTSDataset in a ThreadDataLoader.
+    threaded: bool = True,
+) -> ThreadDataLoader | DataLoader:
+    """Wrap a BraTSDataset in a loader.
 
-    ThreadDataLoader is used instead of torch DataLoader to avoid Windows
-    multiprocessing fork issues with num_workers > 0.
+    threaded=True  (training): ThreadDataLoader prefetches the next batch in a
+        background thread, overlapping CPU transforms with GPU compute.
+    threaded=False (validation): plain DataLoader with no background thread,
+        avoiding the OOM that occurs when two full 240x240x155 volumes are
+        held in RAM simultaneously during prefetch.
     """
-    return ThreadDataLoader(
+    if threaded:
+        return ThreadDataLoader(
+            dataset,
+            batch_size=batch_size,
+            shuffle=shuffle,
+            num_workers=num_workers,
+        )
+    return DataLoader(
         dataset,
         batch_size=batch_size,
         shuffle=shuffle,
-        num_workers=num_workers,
-        # pin_memory is not supported by ThreadDataLoader and causes issues on Windows
+        num_workers=0,  # num_workers>0 unsafe on Windows with spawn; not needed for sequential val
     )
