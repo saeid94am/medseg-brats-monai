@@ -22,6 +22,7 @@ import hydra
 import numpy as np
 import torch
 import wandb
+from tqdm import tqdm
 from monai.inferers import sliding_window_inference
 from monai.utils import set_determinism
 from omegaconf import DictConfig, OmegaConf
@@ -174,13 +175,21 @@ def main(cfg: DictConfig) -> None:
     # 9. Training loop
     # ------------------------------------------------------------------ #
     grad_accum = cfg.training.grad_accum_steps
+    epoch_bar = tqdm(
+        range(start_epoch, cfg.training.max_epochs),
+        desc="Epochs",
+        unit="epoch",
+        initial=start_epoch,
+        total=cfg.training.max_epochs,
+    )
 
-    for epoch in range(start_epoch, cfg.training.max_epochs):
+    for epoch in epoch_bar:
         model.train()
         epoch_loss = 0.0
         optimizer.zero_grad()
 
-        for step, batch in enumerate(train_loader):
+        step_bar = tqdm(train_loader, desc=f"Epoch {epoch:03d}", unit="step", leave=False)
+        for step, batch in enumerate(step_bar):
             images = batch["image"].to(device)  # [B, 4, 96, 96, 96]
             labels = batch["label"].to(device)  # [B, 3, 96, 96, 96]
 
@@ -208,6 +217,7 @@ def main(cfg: DictConfig) -> None:
                 optimizer.zero_grad()
 
             epoch_loss += loss.item() * grad_accum
+            step_bar.set_postfix(loss=f"{loss.item() * grad_accum:.4f}")
 
             if cfg.debug_memory and step == 0 and epoch == 0:
                 _log_memory("epoch=0 step=0 post-backward")
@@ -218,6 +228,9 @@ def main(cfg: DictConfig) -> None:
 
         wandb.log({"train/loss": avg_loss, "train/lr": current_lr, "epoch": epoch})
         log.info(f"Epoch {epoch:03d} | loss={avg_loss:.4f} | lr={current_lr:.2e}")
+        epoch_bar.set_postfix(
+            loss=f"{avg_loss:.4f}", lr=f"{current_lr:.2e}", best_dice=f"{best_mean_dice:.4f}"
+        )
 
         # Save a rolling "last" checkpoint every epoch so resume never loses
         # more than one epoch of training regardless of val_interval.
