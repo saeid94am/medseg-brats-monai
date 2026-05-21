@@ -91,7 +91,9 @@ def main(cfg: DictConfig) -> None:
     train_loader = build_loader(
         train_ds, batch_size=cfg.training.batch_size, shuffle=True, num_workers=cfg.data.num_workers
     )
-    val_loader = build_loader(val_ds, batch_size=1, shuffle=False, num_workers=cfg.data.num_workers, threaded=False)
+    val_loader = build_loader(
+        val_ds, batch_size=1, shuffle=False, num_workers=cfg.data.num_workers, threaded=False
+    )
     log.info(f"Train cases: {len(train_ds)} | Val cases: {len(val_ds)}")
 
     # ------------------------------------------------------------------ #
