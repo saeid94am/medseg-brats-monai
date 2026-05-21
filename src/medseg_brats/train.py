@@ -89,7 +89,11 @@ def main(cfg: DictConfig) -> None:
         num_workers=cfg.data.num_workers,
     )
     train_loader = build_loader(
-        train_ds, batch_size=cfg.training.batch_size, shuffle=True, num_workers=cfg.data.num_workers
+        train_ds,
+        batch_size=cfg.training.batch_size,
+        shuffle=True,
+        num_workers=cfg.data.num_workers,
+        threaded=False,
     )
     val_loader = build_loader(
         val_ds, batch_size=1, shuffle=False, num_workers=cfg.data.num_workers, threaded=False
