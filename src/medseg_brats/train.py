@@ -22,11 +22,11 @@ import hydra
 import numpy as np
 import torch
 import wandb
-from tqdm import tqdm
 from monai.inferers import sliding_window_inference
 from monai.utils import set_determinism
 from omegaconf import DictConfig, OmegaConf
 from torch.nn.utils import clip_grad_norm_
+from tqdm import tqdm
 
 from medseg_brats.data.dataset import BraTSDataset, build_loader
 from medseg_brats.data.transforms import get_train_transforms, get_val_transforms
