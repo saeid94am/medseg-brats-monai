@@ -10,6 +10,10 @@ results/checkpoints/
 *.pt
 *.ckpt
 
+# Generated figures and per-case CSVs
+results/figures/
+results/metrics/
+
 # W&B artifacts
 wandb/
 
