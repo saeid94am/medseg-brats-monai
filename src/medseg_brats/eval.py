@@ -45,10 +45,10 @@ def main(cfg: DictConfig) -> None:
         json_list=cfg.data.json_list,
         split="validation",
         transforms=get_val_transforms(),
-        cache_rate=1.0,
+        cache_rate=0.0,
         num_workers=cfg.data.num_workers,
     )
-    val_loader = build_loader(val_ds, batch_size=1, shuffle=False, num_workers=2)
+    val_loader = build_loader(val_ds, batch_size=1, shuffle=False, num_workers=0, threaded=False)
     log.info(f"Evaluating on {len(val_ds)} validation cases")
 
     # ------------------------------------------------------------------ #
@@ -77,7 +77,7 @@ def main(cfg: DictConfig) -> None:
     # ------------------------------------------------------------------ #
     # Inference + metrics
     # ------------------------------------------------------------------ #
-    metrics = build_metrics()
+    metrics = build_metrics(compute_hd95=True)
     per_case_rows = []
 
     with torch.no_grad():
@@ -96,7 +96,7 @@ def main(cfg: DictConfig) -> None:
             val_preds = (torch.sigmoid(val_outputs) > cfg.inference.threshold).float()
 
             # Per-case metrics using a fresh metric object
-            case_metrics = build_metrics()
+            case_metrics = build_metrics(compute_hd95=True)
             case_metrics.update(y_pred=val_preds, y=val_labels)
             case_result = case_metrics.aggregate()
 
@@ -125,9 +125,9 @@ def main(cfg: DictConfig) -> None:
 
     # Threshold check (from plan — Phase 2 gate)
     if summary["dice_et"] >= 0.80 and summary["dice_wt"] >= 0.85:
-        log.info("✓ Phase 2 threshold met (ET ≥ 0.80, WT ≥ 0.85)")
+        log.info("Phase 2 threshold met (ET >= 0.80, WT >= 0.85)")
     else:
-        log.info("✗ Phase 2 threshold NOT yet met — continue training or tune hyperparameters")
+        log.info("Phase 2 threshold NOT yet met -- continue training or tune hyperparameters")
 
     wandb.log({f"eval/{k}": v for k, v in summary.items()})
     wandb.run.summary.update({f"eval/{k}": v for k, v in summary.items()})
