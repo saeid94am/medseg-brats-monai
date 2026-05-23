@@ -172,12 +172,27 @@ def main() -> None:
         diff_rgb[fp] = [0.2, 0.4, 1.0]   # blue = false positive
         diff_rgb[fn] = [1.0, 0.2, 0.8]   # magenta = false negative
 
+        # Anatomical axis labels depend on the viewing plane
+        # After rot90, the displayed (x=horizontal, y=vertical) axes are:
+        ax_labels = {
+            0: ("P -> A", "I -> S"),   # sagittal:  x=Posterior->Anterior, y=Inferior->Superior
+            1: ("L -> R", "I -> S"),   # coronal:   x=Left->Right,         y=Inferior->Superior
+            2: ("L -> R", "P -> A"),   # axial:     x=Left->Right,         y=Posterior->Anterior
+        }
+        xlabel, ylabel = ax_labels[args.axis]
+
         for col, img in enumerate([gray, pred_overlay, gt_overlay, diff_rgb]):
             ax = axes[row, col]
             cmap = "gray" if col == 0 else None
+            h, w = np.rot90(img if img.ndim == 2 else img[:, :, 0]).shape[:2]
             ax.imshow(np.rot90(img), cmap=cmap, interpolation="nearest")
-            ax.set_ylabel(f"Case {case_idx}", fontsize=9)
-            ax.axis("off")
+            ax.set_ylabel(f"Case {case_idx}\n{ylabel}", fontsize=8)
+            ax.set_xlabel(xlabel, fontsize=8)
+            ax.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
+            for spine in ax.spines.values():
+                spine.set_visible(True)
+                spine.set_linewidth(0.5)
+                spine.set_color("gray")
 
     # Legend
     from matplotlib.patches import Patch
