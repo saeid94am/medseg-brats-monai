@@ -153,6 +153,7 @@ def main(cfg: DictConfig) -> None:
     # ------------------------------------------------------------------ #
     best_mean_dice = 0.0
     start_epoch = 0
+    epochs_no_improve = 0
 
     resume_path = cfg.training.get("resume_from", None)
     if resume_path:
@@ -286,6 +287,7 @@ def main(cfg: DictConfig) -> None:
             # ---------------------------------------------------------- #
             if result["mean_dice"] > best_mean_dice:
                 best_mean_dice = result["mean_dice"]
+                epochs_no_improve = 0
                 ckpt_path = ckpt_dir / f"best_{cfg.model.name}.pth"
                 torch.save(
                     {
@@ -302,6 +304,16 @@ def main(cfg: DictConfig) -> None:
                 log.info(f"  New best mean Dice={best_mean_dice:.4f} -> saved {ckpt_path}")
                 wandb.run.summary["best_mean_dice"] = best_mean_dice
                 wandb.run.summary["best_epoch"] = epoch
+            else:
+                epochs_no_improve += cfg.training.val_interval
+
+            patience = cfg.training.get("early_stop_patience", None)
+            if patience and epochs_no_improve >= patience:
+                log.info(
+                    f"Early stopping: no improvement for {epochs_no_improve} epochs "
+                    f"(patience={patience}). Best mean Dice={best_mean_dice:.4f}"
+                )
+                break
 
     # ------------------------------------------------------------------ #
     # 11. Final summary

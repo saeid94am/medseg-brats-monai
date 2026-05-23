@@ -24,6 +24,7 @@ training:
   grad_checkpoint: true   # gradient checkpointing to save ~35% VRAM
   compile: false          # torch.compile(); disable on Windows without Triton
   resume_from: null       # path to checkpoint to resume from, e.g. results/checkpoints/best_segresnet.pth
+  early_stop_patience: 22 # stop if mean Dice has not improved for this many epochs; null to disable
 
 loss:
   name: dice_ce           # "dice_ce" or "dice_focal" (switch if ET Dice stagnates)
