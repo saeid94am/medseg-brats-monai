@@ -56,3 +56,6 @@ Thumbs.db
 # Secrets
 .env
 *.env
+
+#interpretation
+interpret/
