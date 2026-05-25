@@ -16,7 +16,7 @@ authors:
 version: "0.1.0"
 date-released: "2025-05-17"
 license: MIT
-repository-code: "https://github.com/saeid-amini/medseg-brats-monai"
+repository-code: "https://github.com/saeid94am/medseg-brats-monai"
 keywords:
   - brain tumor segmentation
   - BraTS
