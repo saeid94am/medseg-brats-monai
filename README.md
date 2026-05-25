@@ -1,5 +1,10 @@
 # medseg-brats-monai
 
+[![Lint](https://github.com/saeid94am/medseg-brats-monai/actions/workflows/lint.yml/badge.svg)](https://github.com/saeid94am/medseg-brats-monai/actions/workflows/lint.yml)
+[![Tests](https://github.com/saeid94am/medseg-brats-monai/actions/workflows/test.yml/badge.svg)](https://github.com/saeid94am/medseg-brats-monai/actions/workflows/test.yml)
+[![Docker Build](https://github.com/saeid94am/medseg-brats-monai/actions/workflows/docker-build.yml/badge.svg)](https://github.com/saeid94am/medseg-brats-monai/actions/workflows/docker-build.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **3D brain tumor segmentation on BraTS-GLI 2023 using MONAI — reproducing nnU-Net-class performance with DynUNet, SegResNet, and 3D U-Net on a single consumer GPU (4 GB VRAM).**
 
 > Headline result (to be filled after training): DynUNet — Dice WT=X.XX, TC=X.XX, ET=X.XX on BraTS-GLI 2023 validation set.
