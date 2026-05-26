@@ -75,6 +75,8 @@ class ConvertBraTS2023Labelsd(MapTransform):
 
 def get_train_transforms() -> Compose:
     """Return the full training transform pipeline."""
+    # Re-seed numpy before Compose to avoid uint32 overflow on Windows (MONAI bug).
+    np.random.seed(42)
     return Compose(
         [
             # --- Loading ---
@@ -129,6 +131,7 @@ def get_val_transforms() -> Compose:
     No random augmentations or cropping — full volumes are fed to
     sliding_window_inference at eval time.
     """
+    np.random.seed(42)
     return Compose(
         [
             LoadImaged(keys=_KEYS, image_only=False),
