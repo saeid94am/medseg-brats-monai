@@ -5,6 +5,8 @@ Validation pipeline applies only deterministic preprocessing — full volumes ar
 to sliding_window_inference at evaluation time.
 """
 
+import monai.transforms.compose as _mc
+import monai.transforms.transform as _mt
 import numpy as np
 import torch
 from monai.transforms import (
@@ -25,6 +27,13 @@ from monai.transforms import (
     RandZoomd,
     Spacingd,
 )
+
+# MONAI generates uint32 seeds (up to 2^32-1) but Windows C long is 32-bit (max 2^31-1).
+# Values above 2^31-1 cause OverflowError in _seed % MAX_SEED on Windows.
+# Cap MAX_SEED to 2^31 so all generated seeds fit in a C long.
+_WINDOWS_MAX_SEED = 2**31
+_mt.MAX_SEED = _WINDOWS_MAX_SEED
+_mc.MAX_SEED = _WINDOWS_MAX_SEED
 
 # Keys used throughout — image is a list of 4 NIfTI paths stacked into one tensor
 _KEYS = ["image", "label"]
@@ -75,8 +84,6 @@ class ConvertBraTS2023Labelsd(MapTransform):
 
 def get_train_transforms() -> Compose:
     """Return the full training transform pipeline."""
-    # Re-seed numpy before Compose to avoid uint32 overflow on Windows (MONAI bug).
-    np.random.seed(42)
     return Compose(
         [
             # --- Loading ---
@@ -131,7 +138,6 @@ def get_val_transforms() -> Compose:
     No random augmentations or cropping — full volumes are fed to
     sliding_window_inference at eval time.
     """
-    np.random.seed(42)
     return Compose(
         [
             LoadImaged(keys=_KEYS, image_only=False),
