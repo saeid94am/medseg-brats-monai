@@ -14,6 +14,7 @@ All hyperparameters live in configs/train.yaml and configs/model/*.yaml.
 No values are hardcoded in this file.
 """
 
+import gc
 import logging
 import random
 from pathlib import Path
@@ -253,6 +254,12 @@ def main(cfg: DictConfig) -> None:
         # 9. Validation
         # -------------------------------------------------------------- #
         if (epoch + 1) % cfg.training.val_interval == 0:
+            # Free last training batch from CPU + GPU memory before loading
+            # full validation volumes — prevents gzip MemoryError on 16 GB RAM.
+            del images, labels, outputs, loss
+            gc.collect()
+            torch.cuda.empty_cache()
+
             model.eval()
             metrics.reset()
 
