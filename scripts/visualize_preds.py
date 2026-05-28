@@ -50,7 +50,7 @@ def _build_model(name: str, ckpt_path: Path, device: torch.device) -> torch.nn.M
             spatial_dims=3, in_channels=4, out_channels=3,
             kernel_size=[[3,3,3]]*5, strides=[[1,1,1],[2,2,2],[2,2,2],[2,2,2],[2,2,2]],
             upsample_kernel_size=[[2,2,2]]*4, filters=[32,64,128,256,320],
-            dropout=0.1, deep_supervision=False, deep_supr_num=1,
+            dropout=0.1, deep_supervision=True, deep_supr_num=2,
         ),
         "unet3d": dict(
             spatial_dims=3, in_channels=4, out_channels=3,
