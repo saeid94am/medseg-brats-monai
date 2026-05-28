@@ -7,7 +7,7 @@
 
 **3D brain tumor segmentation on BraTS-GLI 2023 using MONAI — reproducing nnU-Net-class performance with DynUNet, SegResNet, and 3D U-Net on a single consumer GPU (4 GB VRAM).**
 
-> Headline result (to be filled after training): DynUNet — Dice WT=X.XX, TC=X.XX, ET=X.XX on BraTS-GLI 2023 validation set.
+> Headline result: SegResNet — Dice WT=0.921, TC=0.888, ET=0.863 (Mean=0.891) on BraTS-GLI 2023 validation set (250 cases), trained on a single 4 GB GPU.
 
 It establishes a reproducible segmentation baseline using recognized benchmarks, MONAI, and Weights & Biases experiment tracking.
 
@@ -32,14 +32,15 @@ graph TD
 
 ## Results
 
-> Fill this table after training completes. Target for Phase 2 advancement: ET Dice ≥ 0.80, WT Dice ≥ 0.85.
+All models trained on BraTS-GLI 2023 training split, evaluated on validation split (250 cases).
+Hardware: RTX 3050 4 GB VRAM, patch size 96³, FP16 AMP, gradient checkpointing.
 
-| Model | Dice WT ↑ | Dice TC ↑ | Dice ET ↑ | HD95 WT ↓ | HD95 TC ↓ | HD95 ET ↓ | Params |
-|---|---|---|---|---|---|---|---|
-| DynUNet (nnU-Net) | — | — | — | — | — | — | ~7M |
-| SegResNet | — | — | — | — | — | — | ~4M |
-| 3D U-Net | — | — | — | — | — | — | ~4M |
-| nnU-Net (reported) | 0.928 | 0.876 | 0.842 | — | — | — | — |
+| Model | Dice WT ↑ | Dice TC ↑ | Dice ET ↑ | Mean Dice ↑ | HD95 WT ↓ | HD95 TC ↓ | HD95 ET ↓ | Params |
+|---|---|---|---|---|---|---|---|---|
+| SegResNet | **0.9212** | **0.8882** | **0.8631** | **0.8908** | 6.51 | 6.49 | **5.25** | ~4M |
+| DynUNet (nnU-Net) | 0.9149 | 0.8701 | 0.8308 | 0.8719 | 10.78 | 6.70 | 5.95 | ~7M |
+| 3D U-Net | — | — | — | — | — | — | — | ~4M |
+| nnU-Net (reported) | 0.928 | 0.876 | 0.842 | — | — | — | — | — |
 
 W&B report: *(link to be added after training)*
 
