@@ -37,15 +37,17 @@ Hardware: RTX 3050 4 GB VRAM, patch size 96³, FP16 AMP, gradient checkpointing.
 
 | Method | Dice WT ↑ | Dice TC ↑ | Dice ET ↑ | Mean Dice ↑ | HD95 WT ↓ | HD95 TC ↓ | HD95 ET ↓ | Params |
 |---|---|---|---|---|---|---|---|---|
-| **Ensemble + TTA** (3 models) | **0.9290** | **0.8932** | **0.8683** | **0.8969** | **6.09** | **5.49** | **4.41** | — |
+| **Ensemble + TTA** (3 models) | **0.9290** | **0.8932** | **0.8683** | **0.8969** | 6.09 | **5.49** | **4.41** | — |
+| Ensemble (3 models) | 0.9280 | 0.8912 | 0.8659 | 0.8950 | **5.97** | 5.53 | 4.49 | — |
 | SegResNet | 0.9212 | 0.8882 | 0.8631 | 0.8908 | 6.51 | 6.49 | 5.25 | ~4M |
 | 3D U-Net | 0.9209 | 0.8838 | 0.8590 | 0.8879 | 6.17 | 5.64 | 4.43 | ~4M |
 | DynUNet (nnU-Net) | 0.9149 | 0.8701 | 0.8308 | 0.8719 | 10.78 | 6.70 | 5.95 | ~7M |
 | nnU-Net (reported) | 0.928 | 0.876 | 0.842 | — | — | — | — | — |
 
-> Ensemble+TTA of all three models exceeds nnU-Net reported Dice on all regions (WT, TC, ET) on a single 4 GB GPU.
-> SegResNet leads individual models on Dice; 3D U-Net leads on HD95.
-> DynUNet underperforms compact architectures under VRAM constraints — see [4 GB VRAM adaptations](#4-gb-vram-adaptations).
+> **Ablation:** Ensemble alone accounts for the majority of gains (+0.0042 mean Dice vs best single model).
+> TTA adds a further +0.0019 mean Dice with consistent Dice improvement across all regions;
+> its HD95 effect is region-dependent (benefits ET most, marginal on WT).
+> Ensemble+TTA exceeds nnU-Net reported Dice on all three regions on a single 4 GB GPU.
 
 W&B report: *(link to be added after training)*
 
