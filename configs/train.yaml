@@ -10,18 +10,18 @@ data:
   data_dir: data/
   json_list: data/brats2023_splits.json
   cache_rate: 0.0         # 0 = stream from disk (safe for any RAM); raise to 0.1-0.2 if you have 32+ GB RAM
-  num_workers: 0          # 0 keeps CPU free for other apps; increase on Linux/headless servers
+  num_workers: 4          # 2 workers prefetch next batch while GPU trains; reduces idle spikes
 
 training:
   max_epochs: 300
-  val_interval: 10        # run validation every N epochs
-  batch_size: 1
+  val_interval: 10         # run validation every N epochs
+  batch_size: 1           # UNet3D fits 4 samples at ~2 GB VRAM; revert to 1 for DynUNet/SegResNet
   grad_accum_steps: 4     # effective batch size = batch_size * grad_accum_steps = 4
   lr: 1.0e-4
   weight_decay: 1.0e-5
   seed: 42
   amp: true               # FP16 mixed precision via torch.cuda.amp
-  grad_checkpoint: true   # gradient checkpointing to save ~35% VRAM
+  grad_checkpoint: True  # not needed for UNet3D at 4 GB; re-enable for DynUNet/SegResNet
   compile: false          # torch.compile(); disable on Windows without Triton
   resume_from: null       # path to checkpoint to resume from, e.g. results/checkpoints/best_segresnet.pth
   early_stop_patience: 22 # stop if mean Dice has not improved for this many epochs; null to disable

@@ -1,6 +1,17 @@
 # @package _global_
 # Evaluation configuration.
-# Usage: python src/medseg_brats/eval.py model=dynunet inference.checkpoint=results/checkpoints/best_dynunet.pth
+#
+# Single model:
+#   python src/medseg_brats/eval.py model=segresnet inference.checkpoint=results/checkpoints/best_segresnet.pth
+#
+# Single model + TTA:
+#   python src/medseg_brats/eval.py model=segresnet inference.checkpoint=results/checkpoints/best_segresnet.pth tta.enabled=true
+#
+# Ensemble (all 3 models):
+#   python src/medseg_brats/eval.py ensemble.enabled=true
+#
+# Ensemble + TTA:
+#   python src/medseg_brats/eval.py ensemble.enabled=true tta.enabled=true
 
 defaults:
   - model: dynunet
@@ -16,8 +27,22 @@ inference:
   sw_batch_size: 1
   overlap: 0.5
   mode: gaussian
-  checkpoint: null        # required: path to .pth checkpoint file
+  checkpoint: null        # required for single-model eval; ignored when ensemble.enabled=true
   threshold: 0.5          # sigmoid threshold for binary prediction
+
+ensemble:
+  enabled: false          # set true to average predictions from all models below
+  models:
+    - segresnet
+    - unet3d
+    - dynunet
+  checkpoints:
+    - results/checkpoints/best_segresnet.pth
+    - results/checkpoints/best_unet3d.pth
+    - results/checkpoints/best_dynunet.pth
+
+tta:
+  enabled: false          # set true to apply 3-axis flip augmentations and average predictions
 
 output:
   results_dir: results/
@@ -28,3 +53,4 @@ output:
 wandb:
   project: medseg-brats-monai
   entity: null
+  mode: offline

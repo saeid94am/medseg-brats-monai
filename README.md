@@ -7,7 +7,7 @@
 
 **3D brain tumor segmentation on BraTS-GLI 2023 using MONAI — reproducing nnU-Net-class performance with DynUNet, SegResNet, and 3D U-Net on a single consumer GPU (4 GB VRAM).**
 
-> Headline result: SegResNet — Dice WT=0.921, TC=0.888, ET=0.863 (Mean=0.891) on BraTS-GLI 2023 validation set (250 cases), trained on a single 4 GB GPU.
+> Headline result: 3-model ensemble + TTA — Mean Dice=**0.897** (WT=0.929, TC=0.893, ET=0.868, HD95 ET=4.41 mm) on BraTS-GLI 2023 validation set (250 cases), trained on a single 4 GB GPU. Exceeds nnU-Net reported Dice on all three regions (WT 0.928, TC 0.876, ET 0.842).
 
 It establishes a reproducible segmentation baseline using recognized benchmarks, MONAI, and Weights & Biases experiment tracking.
 
@@ -35,12 +35,17 @@ graph TD
 All models trained on BraTS-GLI 2023 training split, evaluated on validation split (250 cases).
 Hardware: RTX 3050 4 GB VRAM, patch size 96³, FP16 AMP, gradient checkpointing.
 
-| Model | Dice WT ↑ | Dice TC ↑ | Dice ET ↑ | Mean Dice ↑ | HD95 WT ↓ | HD95 TC ↓ | HD95 ET ↓ | Params |
+| Method | Dice WT ↑ | Dice TC ↑ | Dice ET ↑ | Mean Dice ↑ | HD95 WT ↓ | HD95 TC ↓ | HD95 ET ↓ | Params |
 |---|---|---|---|---|---|---|---|---|
-| SegResNet | **0.9212** | **0.8882** | **0.8631** | **0.8908** | 6.51 | 6.49 | **5.25** | ~4M |
+| **Ensemble + TTA** (3 models) | **0.9290** | **0.8932** | **0.8683** | **0.8969** | **6.09** | **5.49** | **4.41** | — |
+| SegResNet | 0.9212 | 0.8882 | 0.8631 | 0.8908 | 6.51 | 6.49 | 5.25 | ~4M |
+| 3D U-Net | 0.9209 | 0.8838 | 0.8590 | 0.8879 | 6.17 | 5.64 | 4.43 | ~4M |
 | DynUNet (nnU-Net) | 0.9149 | 0.8701 | 0.8308 | 0.8719 | 10.78 | 6.70 | 5.95 | ~7M |
-| 3D U-Net | — | — | — | — | — | — | — | ~4M |
 | nnU-Net (reported) | 0.928 | 0.876 | 0.842 | — | — | — | — | — |
+
+> Ensemble+TTA of all three models exceeds nnU-Net reported Dice on all regions (WT, TC, ET) on a single 4 GB GPU.
+> SegResNet leads individual models on Dice; 3D U-Net leads on HD95.
+> DynUNet underperforms compact architectures under VRAM constraints — see [4 GB VRAM adaptations](#4-gb-vram-adaptations).
 
 W&B report: *(link to be added after training)*
 
